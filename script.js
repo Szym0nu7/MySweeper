@@ -3,13 +3,13 @@ let flags; // 0 - No flag | 1 - Flag
 let coveredTiles; // 0 - Uncovered | 1 - Covered
 const mapHeight = 5;
 const mapWidth = 5;
-const mineamount = 1;
+const mineamount = 5;
 
 // disable contextmenu
 // https://stackoverflow.com/questions/737022/how-do-i-disable-right-click-on-my-web-page
-document.addEventListener('contextmenu', event => event.preventDefault());
+document.addEventListener("contextmenu", (event) => event.preventDefault());
 
-function check(){
+function check() {
   console.table(coveredTiles);
 }
 
@@ -25,6 +25,7 @@ function generate() {
     .map(() => Array(mapWidth).fill(1));
 
   tableMaker();
+  updateCounter();
 
   for (var y = 0; y < mapHeight; y++) {
     for (var x = 0; x < mapWidth; x++) {
@@ -59,51 +60,57 @@ function tableMaker() {
     output += "</tr>";
   }
   setMines();
-  document.getElementById("fu").innerHTML = "<table id='Area'>" + output + "</table>";
+  document.getElementById("fu").innerHTML =
+    "<table id='Area'>" + output + "</table>";
 }
 
 function cellUncover(y, x) {
   //sprawdza czy flaga jest postawiona
   if (flags[y][x] === 1) return;
-  document.getElementById(y +"-" +x).style.background =
-    "white";
+  document.getElementById(y + "-" + x).style.background = "white";
   coveredTiles[y][x] = 0;
   field = mines[y][x];
   if (field === 0) {
-    document.getElementById(y +"-" +x).innerHTML = " ";
+    document.getElementById(y + "-" + x).innerHTML = " ";
     uncoverEmptyTouchingTiles(y, x);
   } else if (field === -1) {
     showMines();
+    console.log("LOSER LOSER BONER CRUSER");
   } else {
-    document.getElementById(y +"-" +x).innerHTML = field;
+    document.getElementById(y + "-" + x).innerHTML = field;
   }
-  console.log(countInArray(coveredTiles,0), " ", mapHeight*mapWidth - mineamount)
-  if(countInArray(coveredTiles,0) == mapHeight*mapWidth - mineamount) console.log("WINNER WINNER CHIKEN DINNER");
+  console.log(
+    countInArray(coveredTiles, 0),
+    " ",
+    mapHeight * mapWidth - mineamount
+  );
+  if (countInArray(coveredTiles, 0) == mapHeight * mapWidth - mineamount)
+    console.log("WINNER WINNER CHIKEN DINNER");
 }
 
 function flagToggle(y, x) {
-  if (
-    document.getElementById(y +"-" +x).style.background !=
-    "white"
-  ) {
+  if (document.getElementById(y + "-" + x).style.background != "white") {
     if (flags[y][x] === 0) {
-      document.getElementById(y +"-" +x).innerHTML =
+      document.getElementById(y + "-" + x).innerHTML =
         "<img src='flag.png' alt='flag' height='20px' width='20px' />";
       flags[y][x] = 1;
     } else {
-      document.getElementById(y +"-" +x).innerHTML = "";
+      document.getElementById(y + "-" + x).innerHTML = "";
       flags[y][x] = 0;
     }
 
     // flags[y][x] = flags[y][x] === 0 ? 1 : 0;
     // console.log(flags[y][x]);
   }
+  updateCounter();
 }
 
 function setMines() {
   for (i = 0; i < mineamount; i++) {
-    var y = Math.floor(Math.random() * mapHeight);
-    var x = Math.floor(Math.random() * mapWidth);
+    do {
+      var y = Math.floor(Math.random() * mapHeight);
+      var x = Math.floor(Math.random() * mapWidth);
+    } while (mines[y][x] == -1);
     mines[y][x] = -1;
   }
 }
@@ -112,9 +119,8 @@ function showMines() {
   for (let y = 0; y < mapHeight; y++) {
     for (let x = 0; x < mapWidth; x++) {
       if (mines[y][x] == -1) {
-        document.getElementById(y +"-" +x).style =
-          "background:white";
-        document.getElementById(y +"-" +x).innerHTML =
+        document.getElementById(y + "-" + x).style = "background:white";
+        document.getElementById(y + "-" + x).innerHTML =
           "<img src='mine.png' width='20px'>";
       }
     }
@@ -135,7 +141,7 @@ function writingCellValue(xPos, yPos) {
   if (yPos != mapHeight - 1 && xPos != 0)
     if (mines[yPos + 1][xPos - 1] > -1) mines[yPos + 1][xPos - 1] += 1;
 
-if (yPos != mapHeight - 1)
+  if (yPos != mapHeight - 1)
     if (mines[yPos + 1][xPos] > -1) mines[yPos + 1][xPos] += 1;
 
   if (yPos != mapHeight - 1 && xPos != mapHeight - 1)
@@ -199,7 +205,7 @@ function uncoverEmptyTouchingTiles(yPos, xPos) {
     yPos != mapHeight - 1 &&
     xPos != mapWidth - 1 &&
     document.getElementById(parseInt(yPos + 1) + "-" + parseInt(xPos + 1)).style
-      .background != "white" 
+      .background != "white"
   )
     cellUncover(yPos + 1, xPos + 1);
   // bottom left
@@ -207,7 +213,7 @@ function uncoverEmptyTouchingTiles(yPos, xPos) {
     yPos != mapHeight - 1 &&
     xPos != 0 &&
     document.getElementById(parseInt(yPos + 1) + "-" + parseInt(xPos - 1)).style
-      .background != "white" 
+      .background != "white"
   )
     cellUncover(yPos + 1, xPos - 1);
   // top left
@@ -220,14 +226,30 @@ function uncoverEmptyTouchingTiles(yPos, xPos) {
     cellUncover(yPos - 1, xPos - 1);
 }
 
-function countInArray(arr, num){
+function countInArray(arr, num) {
   let n = 0;
-  for(let y = 0; y < mapHeight; y++){
-    for(let x = 0; x < mapWidth; x++){
-      if(arr[y][x] == num)
-        n++;
+  for (let y = 0; y < mapHeight; y++) {
+    for (let x = 0; x < mapWidth; x++) {
+      if (arr[y][x] == num) n++;
     }
-    //console.log(arr[i], " ", num);   
+    //console.log(arr[i], " ", num);
   }
   return n;
+}
+
+function countOnesIn2DArray(arr) {
+  let count = 0;
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr[i].length; j++) {
+      if (arr[i][j] === 1) {
+        count++;
+      }
+    }
+  }
+  return count;
+}
+
+function updateCounter() {
+  document.getElementById("flag-count").innerHTML =
+    mineamount - countOnesIn2DArray(flags);
 }

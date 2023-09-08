@@ -7,13 +7,13 @@
     <title>Document</title>
     <script src="script.js"></script>
     <link rel="stylesheet" href="style.css" />
-    <link rel="preload" as="image" href="flag.png">
-    <link rel="preload" as="image" href="mine.png">
+    <link rel="preload" as="image" href="flag.png" />
+    <link rel="preload" as="image" href="mine.png" />
   </head>
   <body>
     <input type="button" onclick="generate()" value="generate" />
-    <input type="button" onclick="check()" value="run" />
-
+    <input type="button" onclick="check()" value="run" /><br />
+    Bombs left: <span id="flag-count">--</span>
     <div id="fu"></div>
   </body>
 </html>
