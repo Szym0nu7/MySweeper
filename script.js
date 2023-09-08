@@ -1,8 +1,17 @@
-let mines;
-let flags;
-const mapHeight = 10;
-const mapWidth = 10;
-const mineamount = 10;
+let mines; // 0 - Empty | -1 - Mine | 1+ - number
+let flags; // 0 - No flag | 1 - Flag
+let coveredTiles; // 0 - Uncovered | 1 - Covered
+const mapHeight = 5;
+const mapWidth = 5;
+const mineamount = 1;
+
+// disable contextmenu
+// https://stackoverflow.com/questions/737022/how-do-i-disable-right-click-on-my-web-page
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+function check(){
+  console.table(coveredTiles);
+}
 
 function generate() {
   mines = Array(mapHeight)
@@ -11,27 +20,32 @@ function generate() {
   flags = Array(mapHeight)
     .fill()
     .map(() => Array(mapWidth).fill(0));
+  coveredTiles = Array(mapHeight)
+    .fill()
+    .map(() => Array(mapWidth).fill(1));
 
-  tableMaker(mapWidth, mapHeight);
+  tableMaker();
 
   for (var y = 0; y < mapHeight; y++) {
     for (var x = 0; x < mapWidth; x++) {
       if (mines[y][x] == -1) {
-        writing(x, y);
+        writingCellValue(x, y);
       }
     }
   }
+  // console.table(mines);
 }
 
-function tableMaker(tableWidth, tableHeight) {
+function tableMaker() {
   var output = String();
-  for (y = 0; y < tableHeight; y++) {
+  for (y = 0; y < mapHeight; y++) {
     output += "<tr>";
-    for (x = 0; x < tableWidth; x++) {
+    for (x = 0; x < mapWidth; x++) {
       output +=
         "<td class='cell' id='" +
-        y.toString() +
-        x.toString() +
+        y +
+        "-" +
+        x +
         "' style='background:lightgrey' onclick='cellUncover(" +
         y +
         "," +
@@ -44,45 +58,49 @@ function tableMaker(tableWidth, tableHeight) {
     }
     output += "</tr>";
   }
-  putmine();
-  document.getElementById("fu").innerHTML = "<table>" + output + "</table>";
-  console.table(mines);
+  setMines();
+  document.getElementById("fu").innerHTML = "<table id='Area'>" + output + "</table>";
 }
 
 function cellUncover(y, x) {
-  console.log(mines[y][x]);
+  //sprawdza czy flaga jest postawiona
   if (flags[y][x] === 1) return;
-  document.getElementById(y.toString() + x.toString()).style.background =
+  document.getElementById(y +"-" +x).style.background =
     "white";
+  coveredTiles[y][x] = 0;
   field = mines[y][x];
-  if (field == 0) {
-    document.getElementById(y.toString() + x.toString()).innerHTML = " ";
+  if (field === 0) {
+    document.getElementById(y +"-" +x).innerHTML = " ";
     uncoverEmptyTouchingTiles(y, x);
-  } else if (field == -1) {
+  } else if (field === -1) {
     showMines();
-  } else document.getElementById(y.toString() + x.toString()).innerHTML = field;
+  } else {
+    document.getElementById(y +"-" +x).innerHTML = field;
+  }
+  console.log(countInArray(coveredTiles,0), " ", mapHeight*mapWidth - mineamount)
+  if(countInArray(coveredTiles,0) == mapHeight*mapWidth - mineamount) console.log("WINNER WINNER CHIKEN DINNER");
 }
 
 function flagToggle(y, x) {
   if (
-    document.getElementById(y.toString() + x.toString()).style.background !=
+    document.getElementById(y +"-" +x).style.background !=
     "white"
   ) {
     if (flags[y][x] === 0) {
-      document.getElementById(y.toString() + x.toString()).innerHTML =
-        "<img src='flag.jpg' alt='flag' height='20px' />";
+      document.getElementById(y +"-" +x).innerHTML =
+        "<img src='flag.png' alt='flag' height='20px' width='20px' />";
       flags[y][x] = 1;
     } else {
-      document.getElementById(y.toString() + x.toString()).innerHTML = "";
+      document.getElementById(y +"-" +x).innerHTML = "";
       flags[y][x] = 0;
     }
 
     // flags[y][x] = flags[y][x] === 0 ? 1 : 0;
-    console.log(flags[y][x]);
+    // console.log(flags[y][x]);
   }
 }
 
-function putmine() {
+function setMines() {
   for (i = 0; i < mineamount; i++) {
     var y = Math.floor(Math.random() * mapHeight);
     var x = Math.floor(Math.random() * mapWidth);
@@ -94,9 +112,9 @@ function showMines() {
   for (let y = 0; y < mapHeight; y++) {
     for (let x = 0; x < mapWidth; x++) {
       if (mines[y][x] == -1) {
-        document.getElementById(y.toString() + x.toString()).style =
+        document.getElementById(y +"-" +x).style =
           "background:white";
-        document.getElementById(y.toString() + x.toString()).innerHTML =
+        document.getElementById(y +"-" +x).innerHTML =
           "<img src='mine.png' width='20px'>";
       }
     }
@@ -113,11 +131,11 @@ function showMines() {
 //   typing();
 // }
 
-function writing(xPos, yPos) {
+function writingCellValue(xPos, yPos) {
   if (yPos != mapHeight - 1 && xPos != 0)
     if (mines[yPos + 1][xPos - 1] > -1) mines[yPos + 1][xPos - 1] += 1;
 
-  if (yPos != mapHeight - 1)
+if (yPos != mapHeight - 1)
     if (mines[yPos + 1][xPos] > -1) mines[yPos + 1][xPos] += 1;
 
   if (yPos != mapHeight - 1 && xPos != mapHeight - 1)
@@ -138,32 +156,31 @@ function writing(xPos, yPos) {
 }
 
 function uncoverEmptyTouchingTiles(yPos, xPos) {
-  // console.log(document.getElementById(parseInt(yPos-1) +''+ xPos).style)
   // top
   if (
     yPos != 0 &&
-    document.getElementById(parseInt(yPos - 1) + "" + xPos).style.background !=
+    document.getElementById(parseInt(yPos - 1) + "-" + xPos).style.background !=
       "white"
   )
     cellUncover(yPos - 1, xPos);
   // right
   if (
     xPos != mapWidth - 1 &&
-    document.getElementById(yPos + "" + parseInt(xPos + 1)).style.background !=
+    document.getElementById(yPos + "-" + parseInt(xPos + 1)).style.background !=
       "white"
   )
     cellUncover(yPos, xPos + 1);
   // bottom
   if (
     yPos != mapHeight - 1 &&
-    document.getElementById(parseInt(yPos + 1) + "" + xPos).style.background !=
+    document.getElementById(parseInt(yPos + 1) + "-" + xPos).style.background !=
       "white"
   )
     cellUncover(yPos + 1, xPos);
   // left
   if (
     xPos != 0 &&
-    document.getElementById(yPos + "" + parseInt(xPos - 1)).style.background !=
+    document.getElementById(yPos + "-" + parseInt(xPos - 1)).style.background !=
       "white"
   )
     cellUncover(yPos, xPos - 1);
@@ -172,9 +189,8 @@ function uncoverEmptyTouchingTiles(yPos, xPos) {
   if (
     yPos != 0 &&
     xPos != mapWidth - 1 &&
-    document.getElementById(parseInt(yPos - 1) + "" + parseInt(xPos + 1)).style
-      .background != "white" &&
-    mines[yPos - 1][xPos + 1] > 0
+    document.getElementById(parseInt(yPos - 1) + "-" + parseInt(xPos + 1)).style
+      .background != "white"
   )
     cellUncover(yPos - 1, xPos + 1);
 
@@ -182,27 +198,36 @@ function uncoverEmptyTouchingTiles(yPos, xPos) {
   if (
     yPos != mapHeight - 1 &&
     xPos != mapWidth - 1 &&
-    document.getElementById(parseInt(yPos + 1) + "" + parseInt(xPos + 1)).style
-      .background != "white" &&
-    mines[yPos + 1][xPos + 1] > 0
+    document.getElementById(parseInt(yPos + 1) + "-" + parseInt(xPos + 1)).style
+      .background != "white" 
   )
     cellUncover(yPos + 1, xPos + 1);
   // bottom left
   if (
     yPos != mapHeight - 1 &&
     xPos != 0 &&
-    document.getElementById(parseInt(yPos + 1) + "" + parseInt(xPos - 1)).style
-      .background != "white" &&
-    mines[yPos + 1][xPos - 1] > 0
+    document.getElementById(parseInt(yPos + 1) + "-" + parseInt(xPos - 1)).style
+      .background != "white" 
   )
     cellUncover(yPos + 1, xPos - 1);
   // top left
   if (
     yPos != 0 &&
     xPos != 0 &&
-    document.getElementById(parseInt(yPos - 1) + "" + parseInt(xPos - 1)).style
-      .background != "white" &&
-    mines[yPos - 1][xPos - 1] > 0
+    document.getElementById(parseInt(yPos - 1) + "-" + parseInt(xPos - 1)).style
+      .background != "white"
   )
     cellUncover(yPos - 1, xPos - 1);
+}
+
+function countInArray(arr, num){
+  let n = 0;
+  for(let y = 0; y < mapHeight; y++){
+    for(let x = 0; x < mapWidth; x++){
+      if(arr[y][x] == num)
+        n++;
+    }
+    //console.log(arr[i], " ", num);   
+  }
+  return n;
 }
