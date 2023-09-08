@@ -155,24 +155,14 @@ function checkWin() {
 }
 
 function setMines() {
-  // for (i = 0; i < mineamount; i++) {
-  //   do {
-  //     let rand1 = Math.random();
-  //     let rand2 = Math.random();
-  //     var y = Math.floor(rand1 * mapHeight);
-  //     var x = Math.floor(rand2 * mapWidth);
-  //     console.log(x, y);
-  //   } while (mines[y][x] == -1);
-  //   mines[y][x] = -1;
-  // }
-  // console.log("====");
-
-  //setup for fixing a bug
-  mines[3][6] = -1;
-  mines[5][6] = -1;
-  mines[3][1] = -1;
-  mines[5][3] = -1;
-  mines[6][4] = -1;
+  for (i = 0; i < mineamount; i++) {
+    do {
+      var y = Math.floor(Math.random() * mapHeight);
+      var x = Math.floor(Math.random() * mapWidth);
+      console.log(x, y);
+    } while (mines[y][x] == -1);
+    mines[y][x] = -1;
+  }
 }
 
 function showMines() {
