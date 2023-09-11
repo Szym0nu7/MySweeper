@@ -3,8 +3,10 @@ let flags; // 0 - No flag | 1 - Flag
 let coveredTiles; // 0 - Uncovered | 1 - Covered
 const mapHeight = 7;
 const mapWidth = 7;
-const mineamount = 5;
+const mineamount = 1;
 let gameEnded = false;
+let time
+let myTimer
 
 // disable contextmenu
 // https://stackoverflow.com/questions/737022/how-do-i-disable-right-click-on-my-web-page
@@ -26,6 +28,7 @@ function generate() {
     .fill()
     .map(() => Array(mapWidth).fill(1));
 
+  time = 0;
   tableMaker();
   updateCounter();
   setMines();
@@ -35,7 +38,13 @@ function generate() {
       writingCellValue(x, y);
     }
   }
-  // console.table(mines);
+  
+  //timer and display
+  myTimer = setInterval(function(){
+    time++;
+    document.getElementById("timer").innerHTML = convertTime(time);
+  }
+  ,10);  
 }
 
 function tableMaker() {
@@ -107,7 +116,8 @@ function displayLeaderboard() {
   // leaderboard.forEach((entry) => {
   topTenEntries.forEach((entry) => {
     const listItem = document.createElement("li");
-    listItem.textContent = `${entry.playerName}: ${entry.score}`;
+    console.log(entry.score);
+    listItem.textContent = `${entry.playerName}: ${convertTime(entry.score)}`;
     leaderboardList.appendChild(listItem);
   });
 }
@@ -134,7 +144,7 @@ function flagToggle(y, x) {
 function checkWin() {
   if (gameEnded) return;
   if (countOnesInArray(coveredTiles, 0) === mapHeight * mapWidth - mineamount) {
-    let counter = 0;
+    let counter = 0; //jaki jest sens zaznaczania flag po odkryciu wszystkich pól? tylko gre wydłurza
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
         if (mines[y][x] === -1 && flags[y][x] === 1) {
@@ -144,14 +154,31 @@ function checkWin() {
     }
     if (counter === mineamount) {
       gameEnded = true;
+      clearInterval(myTimer);
       let playerName;
       do {
         playerName = prompt(`Enter 3 letter name:`);
         playerName = playerName ? playerName.trim().toUpperCase() : "";
       } while (!playerName.match(/^[A-Z]{3}$/));
-      playerFinishedGame(playerName, parseInt(Math.random() * 500)); //TODO change from random to timer variable
+      playerFinishedGame(playerName, time); //TODO change from random to timer variable
     }
   }
+}
+
+function timer(){
+  time++;
+  console.log("hi");
+  document.getElementById("timer").innerHTML = convertTime(time);
+}
+
+function convertTime(score){
+
+  let m = Math.floor(score/6000);
+  let s = Math.floor(score/100 - m*60);
+  let ms =  score % 100;
+
+  return(m +":" + s + ":" + ms);
+  
 }
 
 function setMines() {
@@ -207,7 +234,7 @@ function writingCellValue(xPos, yPos) {
     const newX = xPos + dx;
     const newY = yPos + dy;
 
-    if (newX >= 0 && newX < mapWidth && newY >= 0 && newY < mapHeight) {
+    if (isValidCell(newY,newX)){  //(newX >= 0 && newX < mapWidth && newY >= 0 && newY < mapHeight) { //optymalization
       if (mines[newY][newX] === -1) {
         count++;
       }
