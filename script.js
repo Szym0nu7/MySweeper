@@ -5,8 +5,36 @@ let mapHeight = 10;
 let mapWidth = 10;
 let mineamount = 10;
 let gameState = 'start';
-let time
-let myTimer
+let difficultyID = 0;
+let time;
+let myTimer;
+
+const difficultySettings =  {
+  easy: {
+    id:0,
+    width:7,
+    height:7,
+    bombs:7   
+  },
+  medium: {
+    id:1,
+    width:10, 
+    height:10,
+    bombs:15
+  },
+  hard: {
+    id:2,
+    width: 20,
+    height:20,
+    bombs:45
+  },
+  insane: {
+    id:3,
+    width: 40,
+    height:40,
+    bombs: 90
+  }
+}
 
 // disable contextmenu
 // https://stackoverflow.com/questions/737022/how-do-i-disable-right-click-on-my-web-page
@@ -99,21 +127,22 @@ function playerFinishedGame(playerName, score) {
 }
 
 function initializeLeaderboard() {
-  if (localStorage.getItem("leaderboard") === null) {
-    localStorage.setItem("leaderboard", JSON.stringify([]));
+  for (let i = 0; i <= 3; i++) {
+  if (localStorage.getItem(`leaderboard-${i}`) === null) {
+    localStorage.setItem(`leaderboard-${i}`, JSON.stringify([]));
   }
-}
+}}
 
 function addEntryToLeaderboard(playerName, score) {
-  const leaderboard = JSON.parse(localStorage.getItem("leaderboard"));
+  const leaderboard = JSON.parse(localStorage.getItem(`leaderboard-${difficultyID}`));
   leaderboard.push({ playerName, score });
   leaderboard.sort((a, b) => a.score - b.score);
   // leaderboard.reverse();
-  localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+  localStorage.setItem(`leaderboard-${difficultyID}`, JSON.stringify(leaderboard));
 }
 
 function displayLeaderboard() {
-  const leaderboard = JSON.parse(localStorage.getItem("leaderboard"));
+  const leaderboard = JSON.parse(localStorage.getItem(`leaderboard-${difficultyID}`));
   const leaderboardList = document.getElementById("leaderboard-list");
   leaderboardList.innerHTML = "";
 
@@ -140,8 +169,6 @@ function flagToggle(y, x) {
     }
 
     checkWin();
-    // flags[y][x] = flags[y][x] === 0 ? 1 : 0;
-    // console.log(flags[y][x]);
   }
   updateCounter();
 }
@@ -170,10 +197,7 @@ function checkWin() {
   }
 }
 
-
-
 function convertTime(score){
-
   let m = Math.floor(score/6000);
   let s = Math.floor(score/100 - m*60);
   let ms =  score % 100;
@@ -309,36 +333,16 @@ function updateCounter() {
     mineamount - countOnesIn2DArray(flags);
 }
 
-function chooseDifficulty(difficulty){
-
-  const difficultySettings =  {
-    easy: {
-      width:7,
-      height:7,
-      bombs:10   
-    },
-    medium: {
-      width:10, 
-      height:10,
-      bombs:15
-
-    },
-    hard: {
-      width: 20,
-      height:20,
-      bombs:45
-
-    },
-    insane: {
-      width: 40,
-      height:40,
-      bombs: 90
-
-    }
+function chooseDifficulty(difficulty = 'easy'){
+  switch(difficulty){
+    case 'easy': difficultyID = 0; break;
+    case 'medium': difficultyID = 1; break;
+    case 'hard': difficultyID = 2; break;
+    case 'insane': difficultyID = 3; break;
   }
-
   mapHeight = difficultySettings[difficulty].height;
   mapWidth = difficultySettings[difficulty].width;
   mineamount = difficultySettings[difficulty].bombs;
   generate();
+  displayLeaderboard();
 }
