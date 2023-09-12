@@ -12,7 +12,13 @@
   </head>
   <body>
     <span id="timer"></span>
-    <input type="button" onclick="generate()" value="generate" />
+
+    <input type="button" onclick="chooseDifficulty('easy')" value="Easy">
+    <input type="button" onclick="chooseDifficulty('medium')" value="Medium">
+    <input type="button" onclick="chooseDifficulty('hard')" value="Hard">
+    <input type="button" onclick="chooseDifficulty('insane')" value="Insane">
+
+    <!-- <input type="button" onclick="generate()" value="generate" /> -->
     <input type="button" onclick="check()" value="run" /><br />
     <input
       type="button"

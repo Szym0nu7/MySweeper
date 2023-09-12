@@ -1,9 +1,9 @@
 let mines; // 0 - Empty | -1 - Mine | 1+ - number
 let flags; // 0 - No flag | 1 - Flag
 let coveredTiles; // 0 - Uncovered | 1 - Covered
-const mapHeight = 10;
-const mapWidth = 10;
-const mineamount = 10;
+let mapHeight = 10;
+let mapWidth = 10;
+let mineamount = 10;
 let gameState = 'start';
 let time
 let myTimer
@@ -18,6 +18,8 @@ function check() {
 
 function generate() {
   gameState = 'start';
+  clearInterval(myTimer);
+  
   mines = Array(mapHeight)
     .fill()
     .map(() => Array(mapWidth).fill(0));
@@ -29,6 +31,7 @@ function generate() {
     .map(() => Array(mapWidth).fill(1));
 
   time = 0;
+  document.getElementById("timer").innerHTML = convertTime(time);
   tableMaker();
   updateCounter();
   setMines();
@@ -304,4 +307,38 @@ function countOnesIn2DArray(arr) {
 function updateCounter() {
   document.getElementById("flag-count").innerHTML =
     mineamount - countOnesIn2DArray(flags);
+}
+
+function chooseDifficulty(difficulty){
+
+  const difficultySettings =  {
+    easy: {
+      width:7,
+      height:7,
+      bombs:10   
+    },
+    medium: {
+      width:10, 
+      height:10,
+      bombs:15
+
+    },
+    hard: {
+      width: 20,
+      height:20,
+      bombs:45
+
+    },
+    insane: {
+      width: 40,
+      height:40,
+      bombs: 90
+
+    }
+  }
+
+  mapHeight = difficultySettings[difficulty].height;
+  mapWidth = difficultySettings[difficulty].width;
+  mineamount = difficultySettings[difficulty].bombs;
+  generate();
 }
