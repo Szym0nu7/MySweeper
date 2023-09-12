@@ -11,24 +11,24 @@
     <link rel="preload" as="image" href="mine.png" /> -->
   </head>
   <body>
-    <span id="timer"></span>
-
-    <input type="button" onclick="chooseDifficulty('easy')" value="Easy">
-    <input type="button" onclick="chooseDifficulty('medium')" value="Medium">
-    <input type="button" onclick="chooseDifficulty('hard')" value="Hard">
-    <input type="button" onclick="chooseDifficulty('insane')" value="Insane">
-
-    <!-- <input type="button" onclick="generate()" value="generate" /> -->
-    <input type="button" onclick="check()" value="run" /><br />
+    <section id="difficulty">
+      <input type="button" onclick="chooseDifficulty('easy')" value="Easy">
+      <input type="button" onclick="chooseDifficulty('medium')" value="Medium">
+      <input type="button" onclick="chooseDifficulty('hard')" value="Hard">
+      <input type="button" onclick="chooseDifficulty('insane')" value="Insane"></section>
+    <section id="main">
+      Bombs left: <span id="flag-count">--</span><span id="timer"></span>
+      <div id="fu"></div></section>
+    <section id="leaderboard">
+      <h2>Leaderboard</h2>
+    <ol id="leaderboard-list"></ol>
     <input
       type="button"
       onclick="localStorage.clear(); initializeLeaderboard(); displayLeaderboard();"
       value="clear-leaderboard --test-button"
-    /><br />
+    />
+    </section>
+    
 
-    Bombs left: <span id="flag-count">--</span>
-    <div id="fu"></div>
-    <h2>Leaderboard</h2>
-    <ol id="leaderboard-list"></ol>
   </body>
 </html>
