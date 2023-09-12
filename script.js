@@ -1,9 +1,9 @@
 let mines; // 0 - Empty | -1 - Mine | 1+ - number
 let flags; // 0 - No flag | 1 - Flag
 let coveredTiles; // 0 - Uncovered | 1 - Covered
-const mapHeight = 7;
-const mapWidth = 7;
-const mineamount = 1;
+const mapHeight = 10;
+const mapWidth = 10;
+const mineamount = 10;
 let gameEnded = false;
 let time
 let myTimer
@@ -165,18 +165,16 @@ function checkWin() {
   }
 }
 
-function timer(){
-  time++;
-  console.log("hi");
-  document.getElementById("timer").innerHTML = convertTime(time);
-}
+
 
 function convertTime(score){
 
   let m = Math.floor(score/6000);
   let s = Math.floor(score/100 - m*60);
   let ms =  score % 100;
-
+  if(m < 10) m = "0" + m;
+  if(s < 10) s = "0" + s;
+  if(ms < 10) ms = "0" + ms;
   return(m +":" + s + ":" + ms);
   
 }
