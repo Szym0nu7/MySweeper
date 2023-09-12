@@ -112,7 +112,7 @@ function cellUncover(y, x, clicked = false) {
     uncoverEmptyTouchingTiles(y, x);
   } else if (field === -1) {
     showMines();
-    console.log("LOSER LOSER BONER CRUSER");
+    gameEnd();
   } else {
     document.getElementById(`${y}-${x}`).innerHTML = field;
   }
@@ -153,7 +153,6 @@ function displayLeaderboard() {
   // leaderboard.forEach((entry) => {
   topTenEntries.forEach((entry) => {
     const listItem = document.createElement("li");
-    console.log(entry.score);
     listItem.textContent = `${entry.playerName}: ${convertTime(entry.score)}`;
     leaderboardList.appendChild(listItem);
   });
@@ -216,7 +215,6 @@ function setMines() {
     do {
       var y = Math.floor(Math.random() * mapHeight);
       var x = Math.floor(Math.random() * mapWidth);
-      console.log(x, y);
     } while (mines[y][x] == -1);
     mines[y][x] = -1;
   }
@@ -365,4 +363,9 @@ function chooseDifficulty(difficulty = 'easy'){
   mineamount = difficultySettings[difficulty].bombs;
   generate();
   displayLeaderboard();
+}
+
+function gameEnd(){
+  gameState = 'end';
+  alert("LOSER LOSER BONER CRUSER");
 }
