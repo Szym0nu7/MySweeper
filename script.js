@@ -4,7 +4,7 @@ let coveredTiles; // 0 - Uncovered | 1 - Covered
 const mapHeight = 10;
 const mapWidth = 10;
 const mineamount = 10;
-let gameEnded = false;
+let gameState = 'start';
 let time
 let myTimer
 
@@ -17,7 +17,7 @@ function check() {
 }
 
 function generate() {
-  gameEnded = false;
+  gameState = 'start';
   mines = Array(mapHeight)
     .fill()
     .map(() => Array(mapWidth).fill(0));
@@ -38,13 +38,6 @@ function generate() {
       writingCellValue(x, y);
     }
   }
-  
-  //timer and display
-  myTimer = setInterval(function(){
-    time++;
-    document.getElementById("timer").innerHTML = convertTime(time);
-  }
-  ,10);  
 }
 
 function tableMaker() {
@@ -65,7 +58,16 @@ function tableMaker() {
 }
 
 function cellUncover(y, x) {
-  if (gameEnded) return;
+  if (gameState == 'end') return;
+  if (gameState == 'start') {
+    //timer and display
+  myTimer = setInterval(function(){
+    time++;
+    document.getElementById("timer").innerHTML = convertTime(time);
+  }
+  ,10);
+    gameState = 'ongoing';  
+  }
   //sprawdza czy flaga jest postawiona
   if (flags[y][x] === 1) return;
   document.getElementById(`${y}-${x}`).style.background = "white";
@@ -123,7 +125,7 @@ function displayLeaderboard() {
 }
 
 function flagToggle(y, x) {
-  if (gameEnded) return;
+  if (gameState == 'end') return;
   if (document.getElementById(`${y}-${x}`).style.background != "white") {
     if (flags[y][x] === 0) {
       document.getElementById(`${y}-${x}`).innerHTML =
@@ -142,7 +144,7 @@ function flagToggle(y, x) {
 }
 
 function checkWin() {
-  if (gameEnded) return;
+  if (gameState == 'end') return;
   if (countOnesInArray(coveredTiles, 0) === mapHeight * mapWidth - mineamount) {
     let counter = 0; //jaki jest sens zaznaczania flag po odkryciu wszystkich pól? tylko gre wydłurza
     for (let y = 0; y < mapHeight; y++) {
@@ -153,7 +155,7 @@ function checkWin() {
       }
     }
     if (counter === mineamount) {
-      gameEnded = true;
+      gameState = 'end';
       clearInterval(myTimer);
       let playerName;
       do {
