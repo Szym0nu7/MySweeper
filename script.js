@@ -32,7 +32,7 @@ const difficultySettings =  {
     id:3,
     width: 40,
     height:40,
-    bombs: 90
+    bombs: 0
   }
 }
 
@@ -77,7 +77,7 @@ function tableMaker() {
     output += "<tr>";
     for (x = 0; x < mapWidth; x++) {
       output += `<td class="cell" id="${y}-${x}" style="background:lightgrey"
-          onclick="cellUncover(${y}, ${x})"
+          onclick="cellUncover(${y}, ${x},${true})"
           oncontextmenu="flagToggle(${y}, ${x})">
         </td>`;
     }
@@ -88,7 +88,7 @@ function tableMaker() {
     "<table id='Area'>" + output + "</table>";
 }
 
-function cellUncover(y, x) {
+function cellUncover(y, x, clicked = false) {
   if (gameState == 'end') return;
   if (gameState == 'start') {
     //timer and display
@@ -101,6 +101,9 @@ function cellUncover(y, x) {
   }
   //sprawdza czy flaga jest postawiona
   if (flags[y][x] === 1) return;
+
+  if(isCellUncovered(y,x) && clicked) uncoverTouchingTiles(y,x);
+
   document.getElementById(`${y}-${x}`).style.background = "white";
   coveredTiles[y][x] = 0;
   field = mines[y][x];
@@ -175,7 +178,7 @@ function flagToggle(y, x) {
 
 function checkWin() {
   if (gameState == 'end') return;
-  if (countOnesInArray(coveredTiles, 0) === mapHeight * mapWidth - mineamount) {
+  if (countOnesIn2DArray(coveredTiles, 0) === mapHeight * mapWidth - mineamount) {
     let counter = 0; //jaki jest sens zaznaczania flag po odkryciu wszystkich pól? tylko gre wydłurza
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
@@ -261,7 +264,7 @@ function writingCellValue(xPos, yPos) {
     const newX = xPos + dx;
     const newY = yPos + dy;
 
-    if (isValidCell(newY,newX)){  //(newX >= 0 && newX < mapWidth && newY >= 0 && newY < mapHeight) { //optymalization
+    if (isInbound(newY,newX)){  //(newX >= 0 && newX < mapWidth && newY >= 0 && newY < mapHeight) { //optymalization
       if (mines[newY][newX] === -1) {
         count++;
       }
@@ -291,36 +294,53 @@ function uncoverEmptyTouchingTiles(yPos, xPos) {
     const newX = xPos + dx;
 
     // sprawdzanie czy nie jest na bandzie, sprawdzanie czy pole jest juz odkryte
-    if (isValidCell(newY, newX) && !isCellUncovered(newY, newX)) {
+    if (isInbound(newY, newX) && !isCellUncovered(newY, newX)) {
       cellUncover(newY, newX);
     }
   }
 }
 
-function isValidCell(y, x) {
+function uncoverTouchingTiles(yPos, xPos){
+  const directions = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1]
+  ];
+  let countFlags = 0;
+  for (const [dx, dy] of directions) {
+      const newY = yPos + dy;
+      const newX = xPos + dx;
+      if(isInbound(newY, newX) && flags[newY][newX] == 1) countFlags++;
+  }
+  if(countFlags != mines[yPos][xPos])return;
+  
+  for (const [dx, dy] of directions) {
+    const newY = yPos + dy;
+    const newX = xPos + dx;
+
+    if (isInbound(newY, newX) && !isCellUncovered(newY, newX)) {
+      cellUncover(newY, newX);
+    }
+  }
+}
+
+function isInbound(y, x) {
   return y >= 0 && y < mapHeight && x >= 0 && x < mapWidth;
 }
 
 function isCellUncovered(y, x) {
   return document.getElementById(`${y}-${x}`).style.background === "white";
 }
-
-function countOnesInArray(arr, num) {
-  let n = 0;
-  for (let y = 0; y < mapHeight; y++) {
-    for (let x = 0; x < mapWidth; x++) {
-      if (arr[y][x] == num) n++;
-    }
-    //console.log(arr[i], " ", num);
-  }
-  return n;
-}
-
-function countOnesIn2DArray(arr) {
+function countOnesIn2DArray(arr, num) {
   let count = 0;
   for (let i = 0; i < arr.length; i++) {
     for (let j = 0; j < arr[i].length; j++) {
-      if (arr[i][j] === 1) {
+      if (arr[i][j] === num) {
         count++;
       }
     }
@@ -330,7 +350,7 @@ function countOnesIn2DArray(arr) {
 
 function updateCounter() {
   document.getElementById("flag-count").innerHTML =
-    mineamount - countOnesIn2DArray(flags);
+  mineamount - countOnesIn2DArray(flags, 1);
 }
 
 function chooseDifficulty(difficulty = 'easy'){
