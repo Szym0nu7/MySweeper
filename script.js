@@ -12,27 +12,27 @@ let myTimer;
 const difficultySettings = {
   easy: {
     id: 0,
-    width: 7,
-    height: 7,
-    bombs: 7,
+    width: 10,
+    height: 10,
+    bombs: 10, //10% of spaces
   },
   medium: {
     id: 1,
-    width: 10,
-    height: 10,
-    bombs: 15,
+    width: 15,
+    height: 15,
+    bombs: 34, //15% of spaces
   },
   hard: {
     id: 2,
-    width: 15,
-    height: 15,
-    bombs: 45,
+    width: 20,
+    height: 20,
+    bombs: 80, //20% of spaces
   },
-  insane: {
+  insane: { // this has to be insane
     id: 3,
-    width: 17,
-    height: 17,
-    bombs: 25,
+    width: 25,
+    height: 25,
+    bombs: 157, // 25% of spaces
   },
 };
 

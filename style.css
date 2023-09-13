@@ -87,11 +87,11 @@ input[type="button"] {
   justify-content: space-between;
 }
 
-#difficulty,
+/* #difficulty,
 #leaderboard,
 #main {
-  /* width: 13rem; */ /* Setting a limited with on main cuses the table to forceibly adjust when its sized exceeded that limit thus creatin uneven docks*/
-}
+  /* width: 13rem; */ /* Setting a limited with on main cuses the table to forceibly adjust when its sized exceeded that limit thus creatin uneven docks
+} */
 
 #main {
   /* width: 13rem; */
