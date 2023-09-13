@@ -7,15 +7,15 @@ tr {
   border: none;
   margin: 2px;
   /* border-collapse: collapse; */
-  width: 20px;
-  height: 20px;
   /* color:rgb(31, 38, 54); */
   color: rgb(17, 24, 26);
   table-layout: fixed; /* https://www.thesitewizard.com/css/make-table-cells-same-size.shtml */
   text-align: center;
 }
 
-.cell {
+.cell,
+tr {
+  padding: 0;
   width: 26px;
   height: 26px;
 }
@@ -23,6 +23,7 @@ tr {
 img {
   width: 26px;
   height: 26px;
+  display: block;
 }
 
 body,
