@@ -90,11 +90,11 @@ input[type="button"] {
 #difficulty,
 #leaderboard,
 #main {
-  width: 13rem;
+  /* width: 13rem; */ /* Setting a limited with on main cuses the table to forceibly adjust when its sized exceeded that limit thus creatin uneven docks*/
 }
 
 #main {
-  width: 13rem;
+  /* width: 13rem; */
   display: flex;
   justify-content: center;
   flex-direction: column;
