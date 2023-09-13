@@ -1,77 +1,102 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
 
-table,td, tr{
-    border: 1px solid black;
-    border:none;
-    margin:2px;
-   /* border-collapse: collapse; */
-   width:20px;
-   height:20px;
-   /* color:rgb(31, 38, 54); */
-   color:rgb(17, 24, 26);
-   table-layout: fixed; /* https://www.thesitewizard.com/css/make-table-cells-same-size.shtml */
-   text-align: center;
+table,
+td,
+tr {
+  border: 1px solid black;
+  border: none;
+  margin: 2px;
+  /* border-collapse: collapse; */
+  width: 20px;
+  height: 20px;
+  /* color:rgb(31, 38, 54); */
+  color: rgb(17, 24, 26);
+  table-layout: fixed; /* https://www.thesitewizard.com/css/make-table-cells-same-size.shtml */
+  text-align: center;
 }
 
-.cell{
-    width:25px;
-    height:25px;
+.cell {
+  width: 26px;
+  height: 26px;
 }
 
-body,html{
-    margin:0;
-    font-family: 'Oswald', sans-serif;
-    font-size: 18px;
+img {
+  width: 26px;
+  height: 26px;
+}
+
+body,
+html {
+  margin: 0;
+  font-family: "Oswald", sans-serif;
+  font-size: 18px;
   line-height: 1.42857143;
   color: #ececec;
   background-color: #2c2b2b;
   min-height: 100vh;
 }
 
-body{
-    display:flex;
-    justify-content: space-around;
-    align-items: center;
+body {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 
-    background: linear-gradient(
+  background: linear-gradient(
     90deg,
     rgb(17, 24, 26) 0%,
     rgb(31, 38, 54) 35%,
-        rgb(31, 38, 54) 65%,
-        rgb(17, 24, 26) 100%
-      );
+    rgb(31, 38, 54) 65%,
+    rgb(17, 24, 26) 100%
+  );
 
-      /* background: linear-gradient(
+  /* background: linear-gradient(
         176deg,
         rgb(17, 24, 26) 50%,
         rgb(31, 38, 54) 100%
       ); */
-      min-height: 100vh;
+  min-height: 100vh;
 }
 
-input[type=button]{
-    background-color: lightgray ;
-    color:rgb(17, 24, 26);
-    border:none;
+input[type="button"] {
+  background-color: lightgray;
+  color: rgb(17, 24, 26);
+  border: none;
 
-    font-family: 'Oswald', sans-serif;
-    font-size: 18px;
+  font-family: "Oswald", sans-serif;
+  font-size: 18px;
   line-height: 1.42857143;
-  padding: .25em  1.4em;
+  padding: 0.25em 1.4em;
+  width: 7em;
 }
 
-#difficulty{
-    display:flex;
-    flex-direction: column;
-    row-gap: 2em;
+#difficulty {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2em;
+
+  justify-content: center;
+  align-items: center;
 }
 
-#leaderboard{
-    display:flex;
-    flex-direction: column;
-    justify-content: space-between;
+#leaderboard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
 }
 
-#difficulty, #leaderboard, #main{
-    width:13rem;
+#difficulty,
+#leaderboard,
+#main {
+  width: 13rem;
+}
+
+#main {
+  width: 13rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
 }

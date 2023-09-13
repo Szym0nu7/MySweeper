@@ -4,37 +4,37 @@ let coveredTiles; // 0 - Uncovered | 1 - Covered
 let mapHeight = 10;
 let mapWidth = 10;
 let mineamount = 10;
-let gameState = 'start';
+let gameState = "start";
 let difficultyID = 0;
 let time;
 let myTimer;
 
-const difficultySettings =  {
+const difficultySettings = {
   easy: {
-    id:0,
-    width:7,
-    height:7,
-    bombs:7   
+    id: 0,
+    width: 7,
+    height: 7,
+    bombs: 7,
   },
   medium: {
-    id:1,
-    width:10, 
-    height:10,
-    bombs:15
+    id: 1,
+    width: 10,
+    height: 10,
+    bombs: 15,
   },
   hard: {
-    id:2,
-    width: 20,
-    height:20,
-    bombs:45
+    id: 2,
+    width: 15,
+    height: 15,
+    bombs: 45,
   },
   insane: {
-    id:3,
-    width: 40,
-    height:40,
-    bombs: 0
-  }
-}
+    id: 3,
+    width: 17,
+    height: 17,
+    bombs: 25,
+  },
+};
 
 // disable contextmenu
 // https://stackoverflow.com/questions/737022/how-do-i-disable-right-click-on-my-web-page
@@ -45,9 +45,9 @@ function check() {
 }
 
 function generate() {
-  gameState = 'start';
+  gameState = "start";
   clearInterval(myTimer);
-  
+
   mines = Array(mapHeight)
     .fill()
     .map(() => Array(mapWidth).fill(0));
@@ -89,20 +89,19 @@ function tableMaker() {
 }
 
 function cellUncover(y, x, clicked = false) {
-  if (gameState == 'end') return;
-  if (gameState == 'start') {
+  if (gameState == "end") return;
+  if (gameState == "start") {
     //timer and display
-  myTimer = setInterval(function(){
-    time++;
-    document.getElementById("timer").innerHTML = convertTime(time);
-  }
-  ,10);
-    gameState = 'ongoing';  
+    myTimer = setInterval(function () {
+      time++;
+      document.getElementById("timer").innerHTML = convertTime(time);
+    }, 10);
+    gameState = "ongoing";
   }
   //sprawdza czy flaga jest postawiona
   if (flags[y][x] === 1) return;
 
-  if(isCellUncovered(y,x) && clicked) uncoverTouchingTiles(y,x);
+  if (isCellUncovered(y, x) && clicked) uncoverTouchingTiles(y, x);
 
   document.getElementById(`${y}-${x}`).style.background = "white";
   coveredTiles[y][x] = 0;
@@ -131,21 +130,29 @@ function playerFinishedGame(playerName, score) {
 
 function initializeLeaderboard() {
   for (let i = 0; i <= 3; i++) {
-  if (localStorage.getItem(`leaderboard-${i}`) === null) {
-    localStorage.setItem(`leaderboard-${i}`, JSON.stringify([]));
+    if (localStorage.getItem(`leaderboard-${i}`) === null) {
+      localStorage.setItem(`leaderboard-${i}`, JSON.stringify([]));
+    }
   }
-}}
+}
 
 function addEntryToLeaderboard(playerName, score) {
-  const leaderboard = JSON.parse(localStorage.getItem(`leaderboard-${difficultyID}`));
+  const leaderboard = JSON.parse(
+    localStorage.getItem(`leaderboard-${difficultyID}`)
+  );
   leaderboard.push({ playerName, score });
   leaderboard.sort((a, b) => a.score - b.score);
   // leaderboard.reverse();
-  localStorage.setItem(`leaderboard-${difficultyID}`, JSON.stringify(leaderboard));
+  localStorage.setItem(
+    `leaderboard-${difficultyID}`,
+    JSON.stringify(leaderboard)
+  );
 }
 
 function displayLeaderboard() {
-  const leaderboard = JSON.parse(localStorage.getItem(`leaderboard-${difficultyID}`));
+  const leaderboard = JSON.parse(
+    localStorage.getItem(`leaderboard-${difficultyID}`)
+  );
   const leaderboardList = document.getElementById("leaderboard-list");
   leaderboardList.innerHTML = "";
 
@@ -159,11 +166,11 @@ function displayLeaderboard() {
 }
 
 function flagToggle(y, x) {
-  if (gameState == 'end') return;
+  if (gameState == "end") return;
   if (document.getElementById(`${y}-${x}`).style.background != "white") {
     if (flags[y][x] === 0) {
       document.getElementById(`${y}-${x}`).innerHTML =
-        "<img src='flag.png' alt='flag' height='20px' width='20px' />";
+        "<img src='flag.png' alt='flag' />";
       flags[y][x] = 1;
     } else {
       document.getElementById(`${y}-${x}`).innerHTML = "";
@@ -176,8 +183,11 @@ function flagToggle(y, x) {
 }
 
 function checkWin() {
-  if (gameState == 'end') return;
-  if (countOnesIn2DArray(coveredTiles, 0) === mapHeight * mapWidth - mineamount) {
+  if (gameState == "end") return;
+  if (
+    countOnesIn2DArray(coveredTiles, 0) ===
+    mapHeight * mapWidth - mineamount
+  ) {
     let counter = 0; //jaki jest sens zaznaczania flag po odkryciu wszystkich pól? tylko gre wydłurza
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
@@ -187,7 +197,7 @@ function checkWin() {
       }
     }
     if (counter === mineamount) {
-      gameState = 'end';
+      gameState = "end";
       clearInterval(myTimer);
       let playerName;
       do {
@@ -199,15 +209,14 @@ function checkWin() {
   }
 }
 
-function convertTime(score){
-  let m = Math.floor(score/6000);
-  let s = Math.floor(score/100 - m*60);
-  let ms =  score % 100;
-  if(m < 10) m = "0" + m;
-  if(s < 10) s = "0" + s;
-  if(ms < 10) ms = "0" + ms;
-  return(m +":" + s + ":" + ms);
-  
+function convertTime(score) {
+  let m = Math.floor(score / 6000);
+  let s = Math.floor(score / 100 - m * 60);
+  let ms = score % 100;
+  if (m < 10) m = "0" + m;
+  if (s < 10) s = "0" + s;
+  if (ms < 10) ms = "0" + ms;
+  return m + ":" + s + ":" + ms;
 }
 
 function setMines() {
@@ -225,8 +234,7 @@ function showMines() {
     for (let x = 0; x < mapWidth; x++) {
       if (mines[y][x] == -1) {
         document.getElementById(`${y}-${x}`).style = "background:white";
-        document.getElementById(`${y}-${x}`).innerHTML =
-          "<img src='mine.png' width='20px'>";
+        document.getElementById(`${y}-${x}`).innerHTML = "<img src='mine.png'>";
       }
     }
   }
@@ -262,7 +270,8 @@ function writingCellValue(xPos, yPos) {
     const newX = xPos + dx;
     const newY = yPos + dy;
 
-    if (isInbound(newY,newX)){  //(newX >= 0 && newX < mapWidth && newY >= 0 && newY < mapHeight) { //optymalization
+    if (isInbound(newY, newX)) {
+      //(newX >= 0 && newX < mapWidth && newY >= 0 && newY < mapHeight) { //optymalization
       if (mines[newY][newX] === -1) {
         count++;
       }
@@ -298,7 +307,7 @@ function uncoverEmptyTouchingTiles(yPos, xPos) {
   }
 }
 
-function uncoverTouchingTiles(yPos, xPos){
+function uncoverTouchingTiles(yPos, xPos) {
   const directions = [
     [-1, -1],
     [-1, 0],
@@ -307,16 +316,16 @@ function uncoverTouchingTiles(yPos, xPos){
     [0, 1],
     [1, -1],
     [1, 0],
-    [1, 1]
+    [1, 1],
   ];
   let countFlags = 0;
   for (const [dx, dy] of directions) {
-      const newY = yPos + dy;
-      const newX = xPos + dx;
-      if(isInbound(newY, newX) && flags[newY][newX] == 1) countFlags++;
+    const newY = yPos + dy;
+    const newX = xPos + dx;
+    if (isInbound(newY, newX) && flags[newY][newX] == 1) countFlags++;
   }
-  if(countFlags != mines[yPos][xPos])return;
-  
+  if (countFlags != mines[yPos][xPos]) return;
+
   for (const [dx, dy] of directions) {
     const newY = yPos + dy;
     const newX = xPos + dx;
@@ -348,15 +357,23 @@ function countOnesIn2DArray(arr, num) {
 
 function updateCounter() {
   document.getElementById("flag-count").innerHTML =
-  mineamount - countOnesIn2DArray(flags, 1);
+    mineamount - countOnesIn2DArray(flags, 1);
 }
 
-function chooseDifficulty(difficulty = 'easy'){
-  switch(difficulty){
-    case 'easy': difficultyID = 0; break;
-    case 'medium': difficultyID = 1; break;
-    case 'hard': difficultyID = 2; break;
-    case 'insane': difficultyID = 3; break;
+function chooseDifficulty(difficulty = "easy") {
+  switch (difficulty) {
+    case "easy":
+      difficultyID = 0;
+      break;
+    case "medium":
+      difficultyID = 1;
+      break;
+    case "hard":
+      difficultyID = 2;
+      break;
+    case "insane":
+      difficultyID = 3;
+      break;
   }
   mapHeight = difficultySettings[difficulty].height;
   mapWidth = difficultySettings[difficulty].width;
@@ -365,7 +382,8 @@ function chooseDifficulty(difficulty = 'easy'){
   displayLeaderboard();
 }
 
-function gameEnd(){
-  gameState = 'end';
+function gameEnd() {
+  gameState = "end";
+  clearInterval(myTimer);
   alert("LOSER LOSER BONER CRUSER");
 }

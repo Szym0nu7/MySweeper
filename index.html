@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>MySweeper - The Game</title>
     <script src="script.js" defer></script>
     <link rel="stylesheet" href="style.css" />
     <!-- <link rel="preload" as="image" href="flag.png" />
@@ -12,23 +12,32 @@
   </head>
   <body>
     <section id="difficulty">
-      <input type="button" onclick="chooseDifficulty('easy')" value="Easy">
-      <input type="button" onclick="chooseDifficulty('medium')" value="Medium">
-      <input type="button" onclick="chooseDifficulty('hard')" value="Hard">
-      <input type="button" onclick="chooseDifficulty('insane')" value="Insane"></section>
+      <input type="button" onclick="chooseDifficulty('easy')" value="Easy" />
+      <input
+        type="button"
+        onclick="chooseDifficulty('medium')"
+        value="Medium"
+      />
+      <input type="button" onclick="chooseDifficulty('hard')" value="Hard" />
+      <input
+        type="button"
+        onclick="chooseDifficulty('insane')"
+        value="Insane"
+      />
+    </section>
     <section id="main">
-      Bombs left: <span id="flag-count">--</span><span id="timer"></span>
-      <div id="fu"></div></section>
+      <span>Bombs left: <span id="flag-count">--</span></span
+      ><span id="timer"></span>
+      <div id="fu"></div>
+    </section>
     <section id="leaderboard">
       <h2>Leaderboard</h2>
-    <ol id="leaderboard-list"></ol>
-    <input
-      type="button"
-      onclick="localStorage.clear(); initializeLeaderboard(); displayLeaderboard();"
-      value="clear-leaderboard --test-button"
-    />
+      <ol id="leaderboard-list"></ol>
+      <!-- <input
+        type="button"
+        onclick="localStorage.clear(); initializeLeaderboard(); displayLeaderboard();"
+        value="clear-leaderboard --test-button"
+      /> -->
     </section>
-    
-
   </body>
 </html>
