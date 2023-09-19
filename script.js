@@ -85,12 +85,13 @@ function cellUncover(y, x, clicked = false) {
   if (gameState == "end") return;
   if (gameState == "start") {
     //timer and display
+
+    generateNumbers(y,x);
+
     myTimer = setInterval(function () {
       time++;
       document.getElementById("timer").innerHTML = convertTime(time);
-    }, 10);
-    console.log(y + " " + x );
-    generateNumbers(y,x);
+    }, 10);    
 
     gameState = "ongoing";
   }
@@ -226,7 +227,6 @@ function setMines() {
 }
 
 function generateNumbers(y, x){
-  console.log(y + " " + x );
   setMines();
                     
   for (let y = 0; y < mapHeight; y++) {
@@ -234,7 +234,6 @@ function generateNumbers(y, x){
       writingCellValue(x, y);
     }
   }
-  console.log(y + " " + x );
   if(mines[y][x] != 0){
     generate();
     generateNumbers(y,x);
