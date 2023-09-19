@@ -62,13 +62,6 @@ function generate() {
   document.getElementById("timer").innerHTML = convertTime(time);
   tableMaker();
   updateCounter();
-  setMines();
-
-  for (var y = 0; y < mapHeight; y++) {
-    for (var x = 0; x < mapWidth; x++) {
-      writingCellValue(x, y);
-    }
-  }
 }
 
 function tableMaker() {
@@ -96,6 +89,9 @@ function cellUncover(y, x, clicked = false) {
       time++;
       document.getElementById("timer").innerHTML = convertTime(time);
     }, 10);
+    console.log(y + " " + x );
+    generateNumbers(y,x);
+
     gameState = "ongoing";
   }
   //sprawdza czy flaga jest postawiona
@@ -226,6 +222,22 @@ function setMines() {
       var x = Math.floor(Math.random() * mapWidth);
     } while (mines[y][x] == -1);
     mines[y][x] = -1;
+  }
+}
+
+function generateNumbers(y, x){
+  console.log(y + " " + x );
+  setMines();
+                    
+  for (let y = 0; y < mapHeight; y++) {
+    for (let x = 0; x < mapWidth; x++) {
+      writingCellValue(x, y);
+    }
+  }
+  console.log(y + " " + x );
+  if(mines[y][x] != 0){
+    generate();
+    generateNumbers(y,x);
   }
 }
 
